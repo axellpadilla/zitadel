@@ -36,17 +36,12 @@ jobs:
     permissions:
       contents: write
       packages: write
-    secrets:
-      GCR_JSON_KEY_BASE64: ${{ secrets.GCR_JSON_KEY_BASE64 }}
     if: ${{ github.event_name == 'workflow_dispatch' }}
     with:
       node_version: "22"
       semantic_version: "23.0.7"
-      publish_google: ${{ github.repository_owner == 'zitadel' }}
       image_name_github_api: "ghcr.io/${{ github.repository_owner }}/zitadel"
-      image_name_google_api: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel' || format('ghcr.io/{0}/zitadel', github.repository_owner) }}
       image_name_github_login: "ghcr.io/${{ github.repository_owner }}/zitadel-login"
-      image_name_google_login: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login' || format('ghcr.io/{0}/zitadel-login', github.repository_owner) }}
 
   release:
     uses: ./.github/workflows/release.yml
@@ -60,13 +55,9 @@ jobs:
       - pack
     if: ${{ github.event_name == 'workflow_dispatch' }}
     secrets:
-      GCR_JSON_KEY_BASE64: ${{ secrets.GCR_JSON_KEY_BASE64 }}
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       semantic_version: "23.0.7"
-      publish_google: ${{ github.repository_owner == 'zitadel' }}
       image_name_github_api: "ghcr.io/${{ github.repository_owner }}/zitadel"
-      image_name_google_api: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel' || format('ghcr.io/{0}/zitadel', github.repository_owner) }}
       image_name_github_login: "ghcr.io/${{ github.repository_owner }}/zitadel-login"
-      image_name_google_login: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login' || format('ghcr.io/{0}/zitadel-login', github.repository_owner) }}
