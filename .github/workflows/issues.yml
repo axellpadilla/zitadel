@@ -11,6 +11,7 @@ on:
 jobs:
   add-to-project:
     name: Add issue and community pr to project
+    if: ${{ github.repository_owner == 'zitadel' }}
     runs-on: ubuntu-latest
     steps:
       - name: add issue
