@@ -1,4 +1,4 @@
-name: CI 
+name: CI
 
 on:
   push:
@@ -42,10 +42,11 @@ jobs:
     with:
       node_version: "22"
       semantic_version: "23.0.7"
-      image_name_github_api: "ghcr.io/zitadel/zitadel"
-      image_name_google_api: "europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel"
-      image_name_github_login: "ghcr.io/zitadel/zitadel-login"
-      image_name_google_login: "europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login"
+      publish_google: ${{ github.repository_owner == 'zitadel' }}
+      image_name_github_api: "ghcr.io/${{ github.repository_owner }}/zitadel"
+      image_name_google_api: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel' || format('ghcr.io/{0}/zitadel', github.repository_owner) }}
+      image_name_github_login: "ghcr.io/${{ github.repository_owner }}/zitadel-login"
+      image_name_google_login: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login' || format('ghcr.io/{0}/zitadel-login', github.repository_owner) }}
 
   release:
     uses: ./.github/workflows/release.yml
@@ -64,7 +65,8 @@ jobs:
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
     with:
       semantic_version: "23.0.7"
-      image_name_github_api: "ghcr.io/zitadel/zitadel"
-      image_name_google_api: "europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel"
-      image_name_github_login: "ghcr.io/zitadel/zitadel-login"
-      image_name_google_login: "europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login"
+      publish_google: ${{ github.repository_owner == 'zitadel' }}
+      image_name_github_api: "ghcr.io/${{ github.repository_owner }}/zitadel"
+      image_name_google_api: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel' || format('ghcr.io/{0}/zitadel', github.repository_owner) }}
+      image_name_github_login: "ghcr.io/${{ github.repository_owner }}/zitadel-login"
+      image_name_google_login: ${{ github.repository_owner == 'zitadel' && 'europe-docker.pkg.dev/zitadel-common/zitadel-repo/zitadel-login' || format('ghcr.io/{0}/zitadel-login', github.repository_owner) }}
