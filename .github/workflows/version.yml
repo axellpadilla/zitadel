@@ -45,9 +45,7 @@ jobs:
         semantic_version: ${{ inputs.semantic_version }}
         branches: |
           [
-            {"name":"next"},
-            {"name":"patched","prerelease":"patched"},
-            {"name":"next-rc","prerelease":"rc"}
+            {"name":"patched","prerelease":"patched"}
           ]
         extra_plugins: |
           @semantic-release/exec@6.0.3
