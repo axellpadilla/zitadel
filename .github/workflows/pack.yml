@@ -15,7 +15,7 @@ on:
       publish_target:
         required: false
         type: string
-        default: all
+        default: login
       semantic_version:
         required: false
         type: string
@@ -49,6 +49,7 @@ jobs:
           fetch-depth: 0
           filter: tree:0
       - name: Set up Go
+        if: ${{ inputs.publish_target != 'login' }}
         uses: actions/setup-go@v6
         with:
           go-version-file: go.mod
@@ -67,17 +68,24 @@ jobs:
           version: v0.28.0
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Pack API and Login
+      - name: Pack API and Login Archives
+        if: ${{ inputs.publish_target == 'all' || inputs.publish_target == 'api' }}
         env:
           ZITADEL_VERSION: ${{ needs.version.outputs.version }}
           NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN || secrets.NX_CLOUD_ACCESS_TOKEN_READONLY }}
         run: pnpm nx run --nxBail pack
+      - name: Build Login for Image
+        if: ${{ inputs.publish_target == 'login' }}
+        env:
+          NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN || secrets.NX_CLOUD_ACCESS_TOKEN_READONLY }}
+        run: pnpm nx run --nxBail @zitadel/login:build
       - name: Suggest Pipeline Fix By Nx Cloud AI
         if: always()
         env:
           NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN || secrets.NX_CLOUD_ACCESS_TOKEN_READONLY }}
         run: pnpm nx fix-ci
       - name: Upload all platform archives
+        if: ${{ inputs.publish_target != 'login' }}
         uses: actions/upload-artifact@v4
         with:
           name: zitadel-archives
