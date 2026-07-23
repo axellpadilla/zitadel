@@ -148,6 +148,14 @@ export async function sendLoginname(command: SendLoginnameCommand) {
 
         const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
+        // LDAP has no external redirect: the backend would return the raw IDP
+        // callback URL concatenated with the intent id (an invalid route).
+        // Collect credentials on the LDAP page instead, like redirectToIdp does.
+        if (provider === "ldap") {
+          params.set("idpId", activeIdps[0].id);
+          return { redirect: "/idp/ldap?" + params };
+        }
+
         const response = await startIdentityProviderFlow({
           serviceConfig,
           idpId: activeIdps[0].id,
@@ -206,6 +214,14 @@ export async function sendLoginname(command: SendLoginnameCommand) {
       }
 
       const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+
+      // LDAP has no external redirect: the backend would return the raw IDP
+      // callback URL concatenated with the intent id (an invalid route).
+      // Collect credentials on the LDAP page instead, like redirectToIdp does.
+      if (provider === "ldap") {
+        params.set("idpId", idp.id);
+        return { redirect: "/idp/ldap?" + params };
+      }
 
       const response = await startIdentityProviderFlow({
         serviceConfig,
